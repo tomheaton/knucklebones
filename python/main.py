@@ -1,5 +1,8 @@
-def main():
-    print("knucklebones")
+from Knucklebones import Knucklebones
+
 
 if __name__ == '__main__':
-    main()
+    knucklebones = Knucklebones()
+    knucklebones.start()
+    print(knucklebones.get_roll())
+    knucklebones.display()
