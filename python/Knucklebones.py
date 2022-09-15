@@ -2,12 +2,16 @@ import os
 
 from typing import List
 from random import randint
+from collections import Counter
 
 
 class Knucklebones():
     def __init__(self) -> None:
         self.player_one_board: List[List[int]] = [[0,0,0],[0,0,0],[0,0,0]]
         self.player_two_board: List[List[int]] = [[0,0,0],[0,0,0],[0,0,0]]
+
+        self.player_one_score: int = 0
+        self.player_two_score: int = 0
 
         self.game_over: bool = False
         self.starting_player: int = randint(0, 1)
@@ -65,8 +69,32 @@ class Knucklebones():
             self.current_player = 1 if self.current_player == 0 else 0
             
             self.clear()
+            self.calculate_score()
 
         print("game over")
+        
+    def calculate_score(self) -> None:
+        b1 = self.player_one_board
+        b2 = self.player_two_board
+        
+        # p1_score = sum(b1[0] + b1[1] + b1[2])
+        p1_score = 0
+        
+        for column in b1:
+            c = Counter(column)
+            print(c)
+            
+        self.player_one_score = p1_score
+        print(f"{p1_score = }")
+            
+        p2_score = sum(b2[0] + b2[1] + b2[2])
+
+        for column in b2:
+            c = Counter(column)
+            print(c)
+            
+        self.player_two_score = p2_score
+        print(f"{p2_score = }")
 
     def is_board_full(self) -> bool:
         b1 = self.player_one_board
@@ -87,14 +115,14 @@ class Knucklebones():
         
         print()
 
-        print("Player One:")
+        print(f"Player One: {self.player_one_score}")
         print(f"|{b1[0][0]}| |{b1[1][0]}| |{b1[2][0]}|")
         print(f"|{b1[0][1]}| |{b1[1][1]}| |{b1[2][1]}|")
         print(f"|{b1[0][2]}| |{b1[1][2]}| |{b1[2][2]}|")
         
         print()
         
-        print("Player Two:")
+        print(f"Player Two: {self.player_two_score}")
         print(f"|{b2[0][0]}| |{b2[1][0]}| |{b2[2][0]}|")
         print(f"|{b2[0][1]}| |{b2[1][1]}| |{b2[2][1]}|")
         print(f"|{b2[0][2]}| |{b2[1][2]}| |{b2[2][2]}|")
