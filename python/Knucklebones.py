@@ -37,6 +37,11 @@ class Knucklebones():
                         if 0 in self.player_one_board[column_index]:
                             free_row = self.player_one_board[column_index].index(0) 
                             self.player_one_board[column_index][free_row] = roll
+                            
+                            for index, number in enumerate(self.player_two_board[column_index]):
+                                if number == roll:
+                                    self.player_two_board[column_index][index] = 0
+
                             break
                         else:
                             print("column is full")
@@ -45,6 +50,12 @@ class Knucklebones():
                         if 0 in self.player_two_board[column_index]:
                             free_row = self.player_two_board[column_index].index(0)
                             self.player_two_board[column_index][free_row] = roll
+                            
+                            if roll in self.player_one_board[column_index]:
+                                for index, number in enumerate(self.player_one_board[column_index]):
+                                    if number == roll:
+                                        self.player_one_board[column_index][index] = 0
+        
                             break
                         else:
                             print("column is full")
@@ -60,15 +71,8 @@ class Knucklebones():
     def is_board_full(self) -> bool:
         b1 = self.player_one_board
         b2 = self.player_two_board
-        
-        print(f"{b1[0] + b1[1] + b1[2]}")
 
-        if 0 in (b1[0] + b1[1] + b1[2] + b2[0] + b2[1] + b2[2]):
-            print("boards not full")
-            return False
-        
-        print("boards full")
-        return True
+        return not 0 in (b1[0] + b1[1] + b1[2] + b2[0] + b2[1] + b2[2])
         
     def get_roll(self) -> int:
         return randint(1, 6)
