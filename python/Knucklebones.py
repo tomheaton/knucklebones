@@ -73,6 +73,7 @@ class Knucklebones():
 
         print("game over")
         
+    # TODO: finish calculate score function
     def calculate_score(self) -> None:
         b1 = self.player_one_board
         b2 = self.player_two_board
@@ -82,6 +83,7 @@ class Knucklebones():
         
         for column in b1:
             c = Counter(column)
+            # TODO: this
             print(c)
             
         self.player_one_score = p1_score
@@ -91,6 +93,7 @@ class Knucklebones():
 
         for column in b2:
             c = Counter(column)
+            # TODO: this
             print(c)
             
         self.player_two_score = p2_score
