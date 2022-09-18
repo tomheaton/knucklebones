@@ -23,6 +23,11 @@ class Knucklebones():
 
         while not self.game_over:
             if self.is_board_full():
+                # TODO: fix this
+                # winner is not always the player with the highest score
+                # because one player may have a board full of low numbers
+                winner = 1 if self.player_one_score > self.player_two_score else 2
+                print(f"The winner is: Player {winner}")
                 self.game_over = True
     
             self.display();
