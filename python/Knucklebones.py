@@ -50,41 +50,51 @@ class Knucklebones:
 
                 column = input(f"\nplayer {self.current_player + 1}: where do you want to put your {roll}? ")
 
-                if column.isdigit() and int(column) in [1, 2, 3]:
-                    column_index = int(column) - 1
-
-                    if self.current_player == 0:
-                        if 0 not in self.player_one_board[column_index]:
-                            print("column is full")
-                            continue
-
-                        free_row = self.player_one_board[column_index].index(0)
-                        self.player_one_board[column_index][free_row] = roll
-
-                        for index, number in enumerate(self.player_two_board[column_index]):
-                            if number == roll:
-                                self.player_two_board[column_index][index] = 0
-
-                        break
-
-                    self.current_player = 1 if self.current_player == 0 else 0
-
-                    if self.current_player == 1:
-                        if 0 not in self.player_two_board[column_index]:
-                            print("column is full")
-                            continue
-
-                        free_row = self.player_two_board[column_index].index(0)
-                        self.player_two_board[column_index][free_row] = roll
-
-                        if roll in self.player_one_board[column_index]:
-                            for index, number in enumerate(self.player_one_board[column_index]):
-                                if number == roll:
-                                    self.player_one_board[column_index][index] = 0
-
-                        break
-                else:
+                if not column.isdigit() or not int(column) in [1, 2, 3]:
                     print("invalid column")
+                    continue
+
+                column_index = int(column) - 1
+
+                if self.current_player == 0:
+                    if 0 not in self.player_one_board[column_index]:
+                        print("column is full")
+                        continue
+
+                    free_row = self.player_one_board[column_index].index(0)
+                    self.player_one_board[column_index][free_row] = roll
+
+                    # TODO: is this needed? (was NOT here before)
+                    if roll not in self.player_two_board[column_index]:
+                        continue
+
+                    for index, number in enumerate(self.player_two_board[column_index]):
+                        if number != roll:
+                            continue
+                        self.player_two_board[column_index][index] = 0
+
+                    break
+
+                self.current_player = 1 if self.current_player == 0 else 0
+
+                if self.current_player == 1:
+                    if 0 not in self.player_two_board[column_index]:
+                        print("column is full")
+                        continue
+
+                    free_row = self.player_two_board[column_index].index(0)
+                    self.player_two_board[column_index][free_row] = roll
+
+                    # TODO: is this needed? (was here before)
+                    if roll not in self.player_one_board[column_index]:
+                        continue
+
+                    for index, number in enumerate(self.player_one_board[column_index]):
+                        if number != roll:
+                            continue
+                        self.player_one_board[column_index][index] = 0
+
+                    break
 
             self.current_player = 1 if self.current_player == 0 else 0
 
@@ -94,19 +104,16 @@ class Knucklebones:
         print("game over")
 
     def calculate_score(self) -> None:
-        b1 = self.player_one_board
-        b2 = self.player_two_board
-
         p1_score = 0
         p2_score = 0
 
-        for column in b1:
+        for column in self.player_one_board:
             for number, count in Counter(column).items():
                 if not number > 0:
                     continue
                 p1_score += number * count ** 2
 
-        for column in b2:
+        for column in self.player_two_board:
             for number, count in Counter(column).items():
                 if not number > 0:
                     continue
