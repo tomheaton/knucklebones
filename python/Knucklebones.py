@@ -5,10 +5,17 @@ from typing import List
 
 
 class Knucklebones:
+    @staticmethod
+    def get_roll() -> int:
+        return randint(1, 6)
+
+    @staticmethod
+    def clear() -> None:
+        os.system("cls" if os.name == "nt" else "clear")
+
     def __init__(self) -> None:
-        # TODO: better typing
-        self.player_one_board: List[List[int, ...], ...] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-        self.player_two_board: List[List[int, ...], ...] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        self.player_one_board: List[List[int]] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        self.player_two_board: List[List[int]] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
         self.player_one_score: int = 0
         self.player_two_score: int = 0
@@ -23,9 +30,8 @@ class Knucklebones:
 
         while not self.game_over:
             if self.is_board_full():
-                # TODO: fix this
-                # winner is not always the player with the highest score
-                # because one player may have a board full of low numbers
+                # TODO: fix this winner is not always the player with the highest score because one player may have a
+                #  board full of low numbers
                 winner = 1 if self.player_one_score > self.player_two_score else 2
                 print(f"The winner is: Player {winner}")
                 self.game_over = True
@@ -38,40 +44,47 @@ class Knucklebones:
                     self.game_over = True
                     break
 
+                # TODO: dont clear the invalid input message
+                # self.clear()
+                # self.display()
+
                 column = input(f"\nplayer {self.current_player + 1}: where do you want to put your {roll}? ")
+
                 if column.isdigit() and int(column) in [1, 2, 3]:
                     column_index = int(column) - 1
 
                     if self.current_player == 0:
-                        if 0 in self.player_one_board[column_index]:
-                            free_row = self.player_one_board[column_index].index(0)
-                            self.player_one_board[column_index][free_row] = roll
-
-                            for index, number in enumerate(self.player_two_board[column_index]):
-                                if number == roll:
-                                    self.player_two_board[column_index][index] = 0
-
-                            break
-                        else:
+                        if 0 not in self.player_one_board[column_index]:
                             print("column is full")
+                            continue
+
+                        free_row = self.player_one_board[column_index].index(0)
+                        self.player_one_board[column_index][free_row] = roll
+
+                        for index, number in enumerate(self.player_two_board[column_index]):
+                            if number == roll:
+                                self.player_two_board[column_index][index] = 0
+
+                        break
+
+                    self.current_player = 1 if self.current_player == 0 else 0
 
                     if self.current_player == 1:
-                        if 0 in self.player_two_board[column_index]:
-                            free_row = self.player_two_board[column_index].index(0)
-                            self.player_two_board[column_index][free_row] = roll
-
-                            if roll in self.player_one_board[column_index]:
-                                for index, number in enumerate(self.player_one_board[column_index]):
-                                    if number == roll:
-                                        self.player_one_board[column_index][index] = 0
-
-                            break
-                        else:
+                        if 0 not in self.player_two_board[column_index]:
                             print("column is full")
+                            continue
+
+                        free_row = self.player_two_board[column_index].index(0)
+                        self.player_two_board[column_index][free_row] = roll
+
+                        if roll in self.player_one_board[column_index]:
+                            for index, number in enumerate(self.player_one_board[column_index]):
+                                if number == roll:
+                                    self.player_one_board[column_index][index] = 0
+
+                        break
                 else:
                     print("invalid column")
-
-            # TODO: clear and display again to remove incorrect input prints
 
             self.current_player = 1 if self.current_player == 0 else 0
 
@@ -89,13 +102,15 @@ class Knucklebones:
 
         for column in b1:
             for number, count in Counter(column).items():
-                if number > 0:
-                    p1_score += number * count ** 2
+                if not number > 0:
+                    continue
+                p1_score += number * count ** 2
 
         for column in b2:
             for number, count in Counter(column).items():
-                if number > 0:
-                    p2_score += number * count ** 2
+                if not number > 0:
+                    continue
+                p2_score += number * count ** 2
 
         self.player_one_score = p1_score
         self.player_two_score = p2_score
@@ -105,14 +120,6 @@ class Knucklebones:
         b2 = self.player_two_board
 
         return 0 not in (b1[0] + b1[1] + b1[2] + b2[0] + b2[1] + b2[2])
-
-    @staticmethod
-    def get_roll() -> int:
-        return randint(1, 6)
-
-    @staticmethod
-    def clear() -> None:
-        os.system("cls" if os.name == "nt" else "clear")
 
     def display(self) -> None:
         b1 = self.player_one_board
