@@ -70,6 +70,8 @@ class Knucklebones():
                             print("column is full")
                 else:
                     print("invalid column")
+            
+            # TODO: clear and display again to remove incorrect input prints
 
             self.current_player = 1 if self.current_player == 0 else 0
             
