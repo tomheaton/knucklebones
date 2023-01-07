@@ -1,4 +1,4 @@
-use std::io::{stdout, Write};
+use std::io::{stdin, stdout, Write};
 
 use rand::Rng;
 
@@ -50,13 +50,7 @@ impl Knucklebones {
             if self.is_board_full() {
                 // TODO: fix this winner is not always the player with the highest
                 //  score because one player may have a board full of low numbers
-                let winner = {
-                    if self.player_one_score > self.player_two_score {
-                        1
-                    } else {
-                        2
-                    }
-                };
+                let winner = if self.player_one_score > self.player_two_score { 1 } else { 2 };
                 println!("The winner is: Player {}", winner);
                 self.game_over = true;
             }
@@ -75,23 +69,65 @@ impl Knucklebones {
                 // self.display();
 
                 print!("\nplayer {}: where do you want to put your {}? ", self.current_player + 1, roll);
-                let mut input = String::new();
-                std::io::stdin().read_line(&mut input).unwrap();
-                let input = input.trim();
+                let mut column = String::new();
+                stdout().flush().unwrap();
+                stdin().read_line(&mut column).unwrap();
 
-                println!("input: {}", input);
-
-                self.current_player = {
-                    if self.current_player == 0 {
-                        1
-                    } else {
-                        0
+                let column_index = match column.trim().parse::<usize>() {
+                    Ok(num) => {
+                        match num {
+                            1..=3 => num - 1,
+                            _ => {
+                                println!("invalid column");
+                                continue;
+                            }
+                        }
+                    }
+                    Err(_) => {
+                        println!("invalid column");
+                        continue;
                     }
                 };
 
-                // self.clear();
-                self.calculate_score();
+                println!("column_index: {}", column_index);
+
+                if self.current_player == 0 {
+                    if self.player_one_board[0][column_index] != 0 {
+                        println!("column is full");
+                        continue;
+                    }
+
+                    let free_row = self.player_one_board[column_index]
+                        .iter()
+                        .position(|&x| x == 0)
+                        .unwrap();
+                    self.player_one_board[column_index][free_row] = roll;
+
+                    break;
+                }
+
+                self.current_player = if self.current_player == 0 { 1 } else { 0 };
+
+                if self.current_player == 1 {
+                    if self.player_two_board[0][column_index] != 0 {
+                        println!("column is full");
+                        continue;
+                    }
+
+                    let free_row = self.player_two_board[column_index]
+                        .iter()
+                        .position(|&x| x == 0)
+                        .unwrap();
+                    self.player_two_board[column_index][free_row] = roll;
+
+                    break;
+                }
             }
+
+            self.current_player = if self.current_player == 0 { 1 } else { 0 };
+
+            // self.clear();
+            self.calculate_score();
         }
         println!("game over!");
     }
@@ -99,7 +135,7 @@ impl Knucklebones {
     fn is_board_full(&self) -> bool {
         for row in 0..3 {
             for col in 0..3 {
-                if self.player_one_board[row][col] == 0 {
+                if self.player_one_board[col][row] == 0 {
                     return false;
                 }
             }
@@ -130,7 +166,7 @@ impl Knucklebones {
         println!("\nPlayer One: {}", self.player_one_score);
         for row in 0..3 {
             for col in 0..3 {
-                print!("| {} ", self.player_one_board[row][col]);
+                print!("| {} ", self.player_one_board[col][row]);
             }
             print!("|\n");
         }
@@ -138,7 +174,7 @@ impl Knucklebones {
         println!("\nPlayer Two: {}", self.player_two_score);
         for row in 0..3 {
             for col in 0..3 {
-                print!("| {} ", self.player_two_board[row][col]);
+                print!("| {} ", self.player_two_board[col][row]);
             }
             print!("|\n");
         }
