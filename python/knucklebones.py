@@ -30,8 +30,8 @@ class Knucklebones:
 
         while not self.game_over:
             if self.is_board_full():
-                # TODO: fix this winner is not always the player with the highest score because one player may have a
-                #  board full of low numbers
+                # TODO: fix this winner is not always the player with the highest
+                #   score because one player may have a board full of low numbers
                 winner = 1 if self.player_one_score > self.player_two_score else 2
                 print(f"The winner is: Player {winner}")
                 self.game_over = True
@@ -101,26 +101,26 @@ class Knucklebones:
             self.clear()
             self.calculate_score()
 
-        print("game over")
+        print("game over!")
 
     def calculate_score(self) -> None:
-        p1_score = 0
-        p2_score = 0
+        player_one_score = 0
+        player_two_score = 0
 
         for column in self.player_one_board:
             for number, count in Counter(column).items():
                 if not number > 0:
                     continue
-                p1_score += number * count ** 2
+                player_one_score += number * count ** 2
 
         for column in self.player_two_board:
             for number, count in Counter(column).items():
                 if not number > 0:
                     continue
-                p2_score += number * count ** 2
+                player_two_score += number * count ** 2
 
-        self.player_one_score = p1_score
-        self.player_two_score = p2_score
+        self.player_one_score = player_one_score
+        self.player_two_score = player_two_score
 
     def is_board_full(self) -> bool:
         b1 = self.player_one_board
@@ -130,13 +130,12 @@ class Knucklebones:
 
     def display(self) -> None:
         b1 = self.player_one_board
-        b2 = self.player_two_board
-
         print(f"\nPlayer One: {self.player_one_score}")
         print(f"| {b1[0][0]} | {b1[1][0]} | {b1[2][0]} |")
         print(f"| {b1[0][1]} | {b1[1][1]} | {b1[2][1]} |")
         print(f"| {b1[0][2]} | {b1[1][2]} | {b1[2][2]} |")
 
+        b2 = self.player_two_board
         print(f"\nPlayer Two: {self.player_two_score}")
         print(f"| {b2[0][0]} | {b2[1][0]} | {b2[2][0]} |")
         print(f"| {b2[0][1]} | {b2[1][1]} | {b2[2][1]} |")
